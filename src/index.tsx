@@ -13,9 +13,11 @@ const setOGProperty = (property: string, value: string) => {
   document.getElementsByTagName('head')[0].appendChild(link);
 }
 
-export const useMetadata = ({ title, description, image }: Metadata) => {
+export const useMetadata = ({ title = "", description = "", image = "" }: Metadata) => {
   useEffect(() => {
-    document.title = title;
+    if (title) {
+      document.title = title;
+    }
 
     const descriptionsArray = document.getElementsByName('description')
     for (let i = 0; i < descriptionsArray.length; i++) {
@@ -31,22 +33,22 @@ export const useMetadata = ({ title, description, image }: Metadata) => {
     for (let i = 0; i < metaElements.length; i++) {
       for (let z = 0; z < metaElements[i].attributes.length; z++) {
         const { nodeName, nodeValue } = metaElements[i].attributes[z];
-        if (nodeName === 'property' && nodeValue === 'og:title') {
+        if (title && nodeName === 'property' && nodeValue === 'og:title') {
           metaElements[i].setAttribute('og:title', title)
           hasOgtitle = true;
-        } else if (nodeName === 'property' && nodeValue === 'og:description') {
+        } else if (description && nodeName === 'property' && nodeValue === 'og:description') {
           metaElements[i].setAttribute('og:description', description)
           hasOGDescription = true;
-        } else if (nodeName === 'property' && nodeValue === 'og:image') {
+        } else if (image && nodeName === 'property' && nodeValue === 'og:image') {
           metaElements[i].setAttribute('og:image', image)
           hasOGImage = true
         }
       }
     }
 
-    if (!hasOgtitle) setOGProperty('og:description', title)
-    if (!hasOGDescription) setOGProperty('og:description', description)
-    if (!hasOGImage) setOGProperty('og:image', image)
+    if (title && !hasOgtitle) setOGProperty('og:title', title)
+    if (description && !hasOGDescription) setOGProperty('og:description', description)
+    if (image && !hasOGImage) setOGProperty('og:image', image)
 
   }, [title, description, image])
 };
