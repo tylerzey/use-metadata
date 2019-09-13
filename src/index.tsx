@@ -1,0 +1,52 @@
+import { useEffect } from 'react';
+
+type Metadata = {
+  title: string,
+  description: string,
+  image: string,
+}
+
+const setOGProperty = (property: string, value: string) => {
+  let link = document.createElement('meta');
+  link.setAttribute('property', property);
+  link.content = value;
+  document.getElementsByTagName('head')[0].appendChild(link);
+}
+
+export const useMetadata = ({ title, description, image }: Metadata) => {
+  useEffect(() => {
+    document.title = title;
+
+    const descriptionsArray = document.getElementsByName('description')
+    for (let i = 0; i < descriptionsArray.length; i++) {
+      descriptionsArray[i].setAttribute('content', description)
+    }
+
+    let hasOgtitle = false;
+    let hasOGDescription = false;
+    let hasOGImage = false;
+
+    const metaElements = document.getElementsByTagName("META");
+
+    for (let i = 0; i < metaElements.length; i++) {
+      for (let z = 0; z < metaElements[i].attributes.length; z++) {
+        const { nodeName, nodeValue } = metaElements[i].attributes[z];
+        if (nodeName === 'property' && nodeValue === 'og:title') {
+          metaElements[i].setAttribute('og:title', title)
+          hasOgtitle = true;
+        } else if (nodeName === 'property' && nodeValue === 'og:description') {
+          metaElements[i].setAttribute('og:description', description)
+          hasOGDescription = true;
+        } else if (nodeName === 'property' && nodeValue === 'og:image') {
+          metaElements[i].setAttribute('og:image', image)
+          hasOGImage = true
+        }
+      }
+    }
+
+    if (!hasOgtitle) setOGProperty('og:description', title)
+    if (!hasOGDescription) setOGProperty('og:description', description)
+    if (!hasOGImage) setOGProperty('og:image', image)
+
+  }, [title, description, image])
+};
