@@ -1,6 +1,6 @@
 {
   "name": "use-metadata",
-  "version": "0.1.4",
+  "version": "1.0.1",
   "main": "dist/index.js",
   "module": "dist/use-metadata.esm.js",
   "typings": "dist/index.d.ts",
